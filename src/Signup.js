@@ -9,17 +9,17 @@ export default class Signup extends Component {
     }
 
     handleSubmit = async (e) => {
-        e.prevent.default();
+        e.preventDefault();
 
         this.setState({ loading: true })
         const user = await request
-            .post('')
+            .post('https://serene-sea-74397.herokuapp.com/auth/signup')
             .send(this.state)
 
         this.setState({ loading: false })
 
-        localStorage.setItem('TOKEN', user.body.token)
-        localStorage.setItem('USERNAME', user.body.email)
+        this.props.handleTokenAndUsernameChange(user.body.token, this.body.email)
+
         this.props.history.push('/todos')
     }
 
@@ -27,22 +27,31 @@ export default class Signup extends Component {
         return (
             <div>
                 <div>
-                    Welcome to the Signup page.
+                    Signup
                 </div>
                 <form onSubmit={this.handleSubmit}>
                     <label>
                         Email:
                         <input 
-                        onChange={(e) => this.setState({
-                            email: e.target.value
-                        })}
+                        onChange={(e) => this.setState({email: e.target.value})}
                         value={this.state.email}
                         />
                     </label>
                     <label>
                         Password:
-                        <input />
+                        <input 
+                        onChange={(e) => this.setState({password: e.target.value})}
+                        value={this.state.password}
+                        type='password'
+                        />
                     </label>
+                    {
+                        this.state.loading
+                        ? <img src='https://media.tenor.com/images/fbb7116384610093c02447c7b0d65df1/tenor.gif' alt='Loading' />
+                        : <button>
+                            Sign up!
+                        </button>
+                    }
                 </form>
             </div>
         )
