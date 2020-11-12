@@ -27,7 +27,7 @@ export default class Signup extends Component {
         return (
             <div>
                 <div>
-                    Welcome to the Signup page.
+                    Signup
                 </div>
                 <form onSubmit={this.handleSubmit}>
                     <label>
