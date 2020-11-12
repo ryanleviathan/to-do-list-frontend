@@ -4,18 +4,38 @@ import {
     Route, 
     Switch,
     Link,
-} from "react-router-dom";
-import Todos from './Todos.js';
+} from "react-router-dom"
+import './App.css'
 import Login from './Login.js'
 import SignUp from './SignUp.js'
-import PrivateRoute from './PrivateRoute.js';
+import Home from './Home.js'
+import Todos from './Todos.js'
+import PrivateRoute from './PrivateRoute.js'
 
 export default class App extends Component {
-  state = { token: localStorage.getItem('TOKEN') }
+  state = { 
+    token: localStorage.getItem('TOKEN') || '',
+    username: localStorage.getItem('USERNAME') || ''
+  }
 
-  handleTokenChange = (myToken) => {
-    this.setState({ token: myToken });
-    localStorage.setItem('TOKEN', myToken);
+  handleTokenAndUsernameChange = (token, username) => {
+    localStorage.setItem('TOKEN', token)
+    localStorage.setItem('USERNAME', username)
+    
+    this.setState({ 
+      token: token,
+      username: username
+    })
+  }
+
+  logOut = () => {
+    localStorage.setItem('TOKEN', '')
+    localStorage.setItem('USERNAME', '')
+
+    this.setState({
+      token: '',
+      username: ''
+    })
   }
 
   render() {
@@ -23,30 +43,41 @@ export default class App extends Component {
       <div>
         <Router>
           <ul>
-            { this.state.token && <div>welcome, user!!!</div> }
-            { this.state.token && <Link to="/todos"><div>todos</div></Link> }
-            <Link to="/login"><div>log in</div></Link>
+            {
+            this.state.token 
+            ? <div>
+              {this.state.username}
+              <button onClick={this.logOut}>Log out</button>
+            </div>
+          : <>
+           <Link to="/login"><div>log in</div></Link>
             <Link to="/signup"><div>sign up</div></Link>
-            <button onClick={() => this.handleTokenChange('')}>logout</button>
+            </>}
           </ul>
           <Switch>
-            <Route exact path='/login' render={(routerProps) => <Login 
-                handleTokenChange={this.handleTokenChange} 
-                {...routerProps} />} 
+            <Route exact path='/' render={(routerProps) => <Home {...routerProps} />} />
+            <Route exact path='/login' render={(routerProps) => 
+                <Login 
+                  {...routerProps} 
+                  handleTokenAndUsernameChange={this.handleTokenAndUsernameChange} 
               />
+              } 
+            />
             <Route 
-            exact path='/signup' 
-              render={(routerProps) => <SignUp 
-                handleTokenChange={this.handleTokenChange} 
-                {...routerProps}/>} 
+              exact 
+              path='/signup' 
+              render={(routerProps) => 
+                  <SignUp  
+                    {...routerProps} 
+                    handleTokenAndUsernameChange={this.handleTokenAndUsernameChange} 
+                    />
+                } 
               />
-            {/* notice that we pass the token here! This is required! */}
             <PrivateRoute 
+              token={this.state.token} 
               exact 
               path='/todos' 
-              token={this.state.token} 
-              render={(routerProps) => <Todos 
-              {...routerProps} />} />
+              render={(routerProps) => <Todos {...routerProps} token={this.state.token} />} />
           </Switch>
         </Router>
       </div>
