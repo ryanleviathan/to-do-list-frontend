@@ -9,7 +9,7 @@ export default class Login extends Component {
     }
 
     handleSubmit = async (e) => {
-        e.prevent.default();
+        e.preventDefault();
 
         this.setState({ loading: true })
         const user = await request
@@ -18,7 +18,7 @@ export default class Login extends Component {
 
         this.setState({ loading: false })
 
-        this.props.handleTokenAndUsernameChange(user.body.email, user.body.token)
+        await this.props.handleTokenAndUsernameChange(user.body.token, user.body.email)
 
         this.props.history.push('/todos')
     }

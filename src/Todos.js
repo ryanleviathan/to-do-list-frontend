@@ -17,7 +17,7 @@ export default class Todos extends Component {
         .get('https://serene-sea-74397.herokuapp.com/api/todos')
         .set('Authorization', token)
 
-        this.setState({ todos: response.body, loading: false })
+        await this.setState({ todos: response.body, loading: false })
     }
     
     componentDidMount = async () => {
@@ -25,10 +25,10 @@ export default class Todos extends Component {
     }
 
     handleSubmit = async (e) => {
+        e.preventDefault()
+
         const { priorityNumber, todoName } = this.state
         const { token } = this.props
-
-        e.preventDefault()
 
         const newTodo = {
             name: todoName,
@@ -37,10 +37,12 @@ export default class Todos extends Component {
 
         this.setState({ loading: true })
 
+        console.log(priorityNumber, todoName)
+
         await request
-        .post('https://serene-sea-74397.herokuapp.com/api/todos')
-        .send(newTodo)
+        .post('https://serene-sea-74397.herokuapp.com/api/todos/')
         .set('Authorization', token)
+        .send(newTodo)
 
         await this.fetchTodos()
     }
@@ -63,12 +65,12 @@ export default class Todos extends Component {
             loading,
             todos
         } = this.state
-
+        console.log(priorityNumber, todoName)
         return (
             <div>
                 Welcome to your todos!
-                <form>
-                    <label onSubmit={this.handleSubmit}>
+                <form onSubmit={this.handleSubmit}>
+                    <label>
                         Add a todo:
                         <input 
                             value={todoName}
@@ -92,7 +94,12 @@ export default class Todos extends Component {
                         : todos.map(todo => <div key={`${todo.name}${todo.id}${Math.random()}`} style={{
                             textDecoration: todo.is_completed ? 'line-through' : 'none' }
                             }>
+                        <p>
                         name: {todo.name}
+                        </p>
+                        <p>
+                        priority number: {todo.priority_number}
+                        </p>
                         {
                             todo.is_completed ? '' : <button
                             onClick={() => this.handleTodoClick(todo.id)}>
