@@ -7,7 +7,7 @@ import {
 } from "react-router-dom"
 import './App.css'
 import Login from './Login.js'
-import SignUp from './SignUp.js'
+import Signup from './Signup.js'
 import Home from './Home.js'
 import Todos from './Todos.js'
 import PrivateRoute from './PrivateRoute.js'
@@ -67,7 +67,7 @@ export default class App extends Component {
               exact 
               path='/signup' 
               render={(routerProps) => 
-                  <SignUp  
+                  <Signup  
                     {...routerProps} 
                     handleTokenAndUsernameChange={this.handleTokenAndUsernameChange} 
                     />
